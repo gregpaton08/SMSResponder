@@ -28,8 +28,6 @@ public class MainActivity extends Activity {
 
 	private final String TAG = this.getClass().getSimpleName();
 	
-	private Button button1;
-	private TextView textView1;
 	private CheckBox cbStatus;
 	private EditText etMessage;
 	private String number;
@@ -40,28 +38,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         
         // set up GUI objects
-        button1 = (Button)findViewById(R.id.button1);
-		textView1 = (TextView)findViewById(R.id.textView1);
 		cbStatus = (CheckBox)findViewById(R.id.cbStatus);
 		etMessage = (EditText)findViewById(R.id.etMessage);
 		final AudioManager audio_mngr = (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
-		
-
-	    button1.setOnClickListener(new View.OnClickListener() {  
-	        public void onClick(View v)
-	        {
-	        	if (textView1.getText() == "mobile")
-	        		textView1.setText("hello");
-	        	else
-	        		textView1.setText("mobile");
-            	sendSMS("5554", "hi");
-	        }
-	    });
-	    
+			    
 	    
 	    cbStatus.setOnClickListener(new View.OnClickListener() {  
 			public void onClick(View v) {
-				textView1.setText("cbstat");
 				if (cbStatus.isChecked() == false)
 				{
 					cbStatus.setText("Available");
@@ -93,17 +76,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
 	    Log.d(TAG, "onNewIntent");
-	    
-	    textView1.setText(etMessage.getText());
 	
-//	    if (cbStatus.isChecked())
-//	    {
+	    if (cbStatus.isChecked())
+	    {
 		    number = intent.getStringExtra("NUMBER");
 		    if (number != null)
 		    {
-		    	sendSMS(number, "I am away");
+		    	sendSMS(number, etMessage.getText().toString());
 		    }
-	    //}	    
+	    }	    
 
 		    super.onNewIntent(intent);
     }
@@ -127,10 +108,6 @@ public class MainActivity extends Activity {
         Toast.makeText(getBaseContext(), str, Toast.LENGTH_SHORT).show();
     }  
     
-    public void receivedSMS(String phoneNumber)
-    {
-    	textView1.setText(phoneNumber);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
