@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ public class MainActivity extends Activity {
 	
 	private Button button1;
 	private TextView textView1;
+	private CheckBox cbStatus;
 	private String number;
 
     @Override
@@ -32,6 +35,7 @@ public class MainActivity extends Activity {
         // set up GUI objects
         button1 = (Button)findViewById(R.id.button1);
 		textView1 = (TextView)findViewById(R.id.textView1);
+		cbStatus = (CheckBox)findViewById(R.id.cbStatus);
 		
 
 	    button1.setOnClickListener(new View.OnClickListener() {  
@@ -47,7 +51,24 @@ public class MainActivity extends Activity {
 //                    Toast.LENGTH_SHORT).show();
             	sendSMS("5554", "hi");
 	        }
-	     });
+	    });
+	    
+	    
+	    cbStatus.setOnClickListener(new View.OnClickListener() {  
+			public void onClick(View v) {
+				textView1.setText("cbstat");
+				if (cbStatus.isChecked() == false)
+				{
+					cbStatus.setText("Available");
+					cbStatus.setChecked(false);
+				}
+				else
+				{
+					cbStatus.setText("Busy");
+					cbStatus.setChecked(true);
+				}
+			}
+		});
 	    
 
 	    

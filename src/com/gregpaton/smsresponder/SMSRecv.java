@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 
@@ -19,6 +20,7 @@ public class SMSRecv extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) 
 	{
 		Log.i(TAG, "onRecv");
+		
         //---get the SMS message passed in---
         Bundle bundle = intent.getExtras();        
         SmsMessage[] msgs = null;
@@ -39,7 +41,7 @@ public class SMSRecv extends BroadcastReceiver {
             //---display the received SMS message---
             Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
 
-            //abortBroadcast();
+            abortBroadcast();
             
             // notify main activity that SMS has been received
             Intent intent2open = new Intent(context, MainActivity.class);
