@@ -36,6 +36,8 @@ public class SMSRecv extends BroadcastReceiver {
             }
             //---display the new SMS message---
             Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
+            
+            abortBroadcast();
         }                 		
 	}
 	
