@@ -11,12 +11,16 @@ import android.content.IntentFilter;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnKeyListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,6 +74,16 @@ public class MainActivity extends Activity {
 					cbStatus.setChecked(true);
 					audio_mngr.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 				}
+			}
+		});
+	    
+	    etMessage.setOnKeyListener(new View.OnKeyListener() {   
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if ((keyCode == KeyEvent.KEYCODE_ENTER)) {  
+					InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
+				}
+				return true;
 			}
 		});
     }
