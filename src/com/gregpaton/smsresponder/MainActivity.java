@@ -19,15 +19,22 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	private final String TAG = this.getClass().getSimpleName();
+	
+	private SMSRecv smsrecv;
+	private Button button1;
+	private TextView textView1;
+	private String number;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        
-        final Button button1 = (Button)findViewById(R.id.button1);
-		final TextView textView1 = (TextView)findViewById(R.id.textView1);
+        // set up GUI objects
+        button1 = (Button)findViewById(R.id.button1);
+		textView1 = (TextView)findViewById(R.id.textView1);
+		
+		Intent intent = new Intent();
 
 	    button1.setOnClickListener(new View.OnClickListener() {  
 	        public void onClick(View v)
@@ -53,7 +60,7 @@ public class MainActivity extends Activity {
             	Toast.makeText(getBaseContext(), 
                     "Receiveeeeeeddddd", 
                     Toast.LENGTH_SHORT).show();
-
+				
 	        	if (textView1.getText() == "recv1")
 	        		textView1.setText("recv2");
 	        	else
@@ -79,79 +86,35 @@ public class MainActivity extends Activity {
                     Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
                 }
 			}
-        }, new IntentFilter("SMS_RECEIVED"));
+        }, new IntentFilter("SMS_RECV"));
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+	    Log.d("YourActivity", "onNewIntent is called!");
+	
+	    String memberFieldString = intent.getStringExtra("KEY");
+	
+	    super.onNewIntent(intent);
+    } // End of onNewIntent(Intent intent)
     
-  //---sends a SMS message to another device---
+
     private void sendSMS(String phoneNumber, String message)
     {      
-    	/*
-        PendingIntent pi = PendingIntent.getActivity(this, 0,
-                new Intent(this, test.class), 0);                
-            SmsManager sms = SmsManager.getDefault();
-            sms.sendTextMessage(phoneNumber, null, message, pi, null);        
-        */
-    	
-    	String SENT = "SMS_SENT";
-    	String DELIVERED = "SMS_DELIVERED";
-    	
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
-            new Intent(SENT), 0);
+            new Intent("SMS_SENT"), 0);
         
         PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0,
-            new Intent(DELIVERED), 0);
-    	
-        //---when the SMS has been sent---
-        registerReceiver(new BroadcastReceiver(){
-			@Override
-			public void onReceive(Context arg0, Intent arg1) {
-				switch (getResultCode())
-				{
-				    case Activity.RESULT_OK:
-					    Toast.makeText(getBaseContext(), "SMS sent", 
-					    		Toast.LENGTH_SHORT).show();
-					    break;
-				    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-					    Toast.makeText(getBaseContext(), "Generic failure", 
-					    		Toast.LENGTH_SHORT).show();
-					    break;
-				    case SmsManager.RESULT_ERROR_NO_SERVICE:
-					    Toast.makeText(getBaseContext(), "No service", 
-					    		Toast.LENGTH_SHORT).show();
-					    break;
-				    case SmsManager.RESULT_ERROR_NULL_PDU:
-					    Toast.makeText(getBaseContext(), "Null PDU", 
-					    		Toast.LENGTH_SHORT).show();
-					    break;
-				    case SmsManager.RESULT_ERROR_RADIO_OFF:
-					    Toast.makeText(getBaseContext(), "Radio off", 
-					    		Toast.LENGTH_SHORT).show();
-					    break;
-				}
-			}
-        }, new IntentFilter(SENT));
-        
-        //---when the SMS has been delivered---
-        registerReceiver(new BroadcastReceiver(){
-			@Override
-			public void onReceive(Context arg0, Intent arg1) {
-				switch (getResultCode())
-				{
-				    case Activity.RESULT_OK:
-					    Toast.makeText(getBaseContext(), "SMS delivered", 
-					    		Toast.LENGTH_SHORT).show();
-					    break;
-				    case Activity.RESULT_CANCELED:
-					    Toast.makeText(getBaseContext(), "SMS not delivered", 
-					    		Toast.LENGTH_SHORT).show();
-					    break;					    
-				}
-			}
-        }, new IntentFilter(DELIVERED));        
-    	
+            new Intent("SMS_DELIVERED"), 0);
+    	      
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);               
-    }    
+    }  
+    
+    public void receivedSMS(String phoneNumber)
+    {
+    	textView1.setText(phoneNumber);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

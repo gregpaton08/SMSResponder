@@ -13,6 +13,7 @@ import android.widget.Toast;
 public class SMSRecv extends BroadcastReceiver {
 
 	private final String TAG = this.getClass().getSimpleName();
+	public String number = null;
 	
 	@Override 
 	public void onReceive(Context context, Intent intent) 
@@ -33,11 +34,20 @@ public class SMSRecv extends BroadcastReceiver {
                 str += " :";
                 str += msgs[i].getMessageBody().toString();
                 str += "\n";        
+                number = msgs[i].getOriginatingAddress(); 
             }
             //---display the new SMS message---
             Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
             
-            abortBroadcast();
+            Intent intent2open = new Intent(context, MainActivity.class);
+            intent2open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent2open.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            String name = "KEY";
+            String value = "String you want to pass";
+            intent2open.putExtra(name, value);
+            context.startActivity(intent2open);
+
+            //abortBroadcast();
         }                 		
 	}
 	
