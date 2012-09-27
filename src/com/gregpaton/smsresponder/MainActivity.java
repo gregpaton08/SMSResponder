@@ -1,5 +1,6 @@
 package com.gregpaton.smsresponder;
 
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ public class MainActivity extends Activity {
 	private Button button1;
 	private TextView textView1;
 	private CheckBox cbStatus;
+	private EditText etMessage;
 	private String number;
 
     @Override
@@ -36,6 +39,8 @@ public class MainActivity extends Activity {
         button1 = (Button)findViewById(R.id.button1);
 		textView1 = (TextView)findViewById(R.id.textView1);
 		cbStatus = (CheckBox)findViewById(R.id.cbStatus);
+		etMessage = (EditText)findViewById(R.id.etMessage);
+		final AudioManager audio_mngr = (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
 		
 
 	    button1.setOnClickListener(new View.OnClickListener() {  
@@ -45,10 +50,6 @@ public class MainActivity extends Activity {
 	        		textView1.setText("hello");
 	        	else
 	        		textView1.setText("mobile");
-	        	//setContentView(textView1);
-//            	Toast.makeText(getBaseContext(), 
-//                    "Please enter both phone number and message.", 
-//                    Toast.LENGTH_SHORT).show();
             	sendSMS("5554", "hi");
 	        }
 	    });
@@ -61,66 +62,36 @@ public class MainActivity extends Activity {
 				{
 					cbStatus.setText("Available");
 					cbStatus.setChecked(false);
+					audio_mngr.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				}
 				else
 				{
 					cbStatus.setText("Busy");
 					cbStatus.setChecked(true);
+					audio_mngr.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 				}
 			}
 		});
-	    
-
-	    
-        registerReceiver(new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-
-            	Toast.makeText(getBaseContext(), 
-                    "Receiveeeeeeddddd", 
-                    Toast.LENGTH_SHORT).show();
-				
-	        	if (textView1.getText() == "recv1")
-	        		textView1.setText("recv2");
-	        	else
-	        		textView1.setText("recv1");
-	        	
-				Bundle bundle = intent.getExtras();
-                SmsMessage[] msgs = null;
-                String str = "";
-
-                if (bundle != null)
-                {
-                    //---retrieve the SMS message received---
-                    Object[] pdus = (Object[]) bundle.get("pdus");
-                    msgs = new SmsMessage[pdus.length];
-                        for (int i = 0; i < msgs.length; i++){
-                        msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
-                        str += "SMS from " + msgs[i].getOriginatingAddress();
-                        str += " :";
-                        str += msgs[i].getMessageBody().toString();
-                        str += "\n";
-                    }
-                    //---display the new SMS message---
-                    Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
-                }
-			}
-        }, new IntentFilter("SMS_RECV"));
     }
 
     
-   // called when SMS is received 
+    // called when SMS is received 
     @Override
     protected void onNewIntent(Intent intent) {
 	    Log.d(TAG, "onNewIntent");
+	    
+	    textView1.setText(etMessage.getText());
 	
-	    number = intent.getStringExtra("NUMBER");
-	    if (number != null)
-	    {
-	    	sendSMS(number, "I am away");
-	    }
-	
-	    super.onNewIntent(intent);
+//	    if (cbStatus.isChecked())
+//	    {
+		    number = intent.getStringExtra("NUMBER");
+		    if (number != null)
+		    {
+		    	sendSMS(number, "I am away");
+		    }
+	    //}	    
+
+		    super.onNewIntent(intent);
     }
     
 
@@ -137,7 +108,7 @@ public class MainActivity extends Activity {
         
         //---display the sent SMS message---
         String str = "";
-        str += "SMS Sent to " + number;
+        str += "SMS Sent to " + phoneNumber;
         str += " : " + message + "\n";
         Toast.makeText(getBaseContext(), str, Toast.LENGTH_SHORT).show();
     }  

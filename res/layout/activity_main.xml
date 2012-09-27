@@ -23,13 +23,28 @@
 
     <CheckBox
         android:id="@+id/cbStatus"
-        android:checked="true"
         android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="18dp"
-        android:layout_toLeftOf="@+id/button1"
+        android:layout_marginTop="19dp"
+        android:layout_toLeftOf="@+id/textView1"
+        android:checked="true"
         android:text="Busy" />
+
+    <EditText
+        android:id="@+id/etMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cbStatus"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/cbStatus"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="I&apos;m not available" >
+
+        <requestFocus />
+    </EditText>
 
 </RelativeLayout>
