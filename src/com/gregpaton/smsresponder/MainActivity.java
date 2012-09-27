@@ -20,7 +20,6 @@ public class MainActivity extends Activity {
 
 	private final String TAG = this.getClass().getSimpleName();
 	
-	private SMSRecv smsrecv;
 	private Button button1;
 	private TextView textView1;
 	private String number;
@@ -34,7 +33,6 @@ public class MainActivity extends Activity {
         button1 = (Button)findViewById(R.id.button1);
 		textView1 = (TextView)findViewById(R.id.textView1);
 		
-		Intent intent = new Intent();
 
 	    button1.setOnClickListener(new View.OnClickListener() {  
 	        public void onClick(View v)
@@ -89,14 +87,20 @@ public class MainActivity extends Activity {
         }, new IntentFilter("SMS_RECV"));
     }
 
+    
+   // called when SMS is received 
     @Override
     protected void onNewIntent(Intent intent) {
-	    Log.d("YourActivity", "onNewIntent is called!");
+	    Log.d(TAG, "onNewIntent");
 	
-	    String memberFieldString = intent.getStringExtra("KEY");
+	    number = intent.getStringExtra("NUMBER");
+	    if (number != null)
+	    {
+	    	sendSMS(number, "I am away");
+	    }
 	
 	    super.onNewIntent(intent);
-    } // End of onNewIntent(Intent intent)
+    }
     
 
     private void sendSMS(String phoneNumber, String message)
@@ -108,7 +112,13 @@ public class MainActivity extends Activity {
             new Intent("SMS_DELIVERED"), 0);
     	      
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);               
+        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);  
+        
+        //---display the sent SMS message---
+        String str = "";
+        str += "SMS Sent to " + number;
+        str += " : " + message + "\n";
+        Toast.makeText(getBaseContext(), str, Toast.LENGTH_SHORT).show();
     }  
     
     public void receivedSMS(String phoneNumber)
